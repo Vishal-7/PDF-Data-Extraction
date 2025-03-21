@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Key-Value Extraction</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #analysis-results {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Upload a PDF for Key-Value Extraction</h1>
+
+    <!-- Upload Form -->
+    <form id="upload-form" enctype="multipart/form-data">
+        <input type="file" name="file" id="file" accept=".pdf" required>
+        <button type="submit">Upload PDF</button>
+    </form>
+
+    <div id="analysis-results"></div>
+
+    <script>
+        $(document).ready(function() {
+            $("#upload-form").on("submit", function(e) {
+                e.preventDefault();
+
+                // Prepare the FormData object to send the file
+                var formData = new FormData();
+                formData.append("file", $("#file")[0].files[0]);
+
+                // Send the file to FastAPI using AJAX
+                $.ajax({
+                    url: "/analyze-pdf/",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        // On success, display the key-value pairs
+                        var resultHtml = '<h2>Key-Value Pairs</h2>';
+                        if (response.kv_pairs && response.kv_pairs.length > 0) {
+                            resultHtml += '<table><tr><th>Key</th><th>Value</th></tr>';
+                            response.kv_pairs.forEach(function(kv) {
+                                resultHtml += `<tr><td>${kv.key}</td><td>${kv.value}</td></tr>`;
+                            });
+                            resultHtml += '</table>';
+                        } else {
+                            resultHtml += '<p>No key-value pairs found.</p>';
+                        }
+
+                        // Display the results
+                        $("#analysis-results").html(resultHtml);
+                    },
+                    error: function() {
+                        alert("Error analyzing the PDF.");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
