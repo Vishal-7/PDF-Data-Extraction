@@ -21,7 +21,7 @@ metric_list = analysis_data['Metrics'].to_list()
 # Creating the FastAPI instance and setting up the templates to display the UI
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # The GET function to direct the user to the base html page to upload the PDF for analysis
 @app.get("/", response_class=HTMLResponse)

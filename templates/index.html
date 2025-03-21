@@ -25,6 +25,10 @@
             padding: 10px;
             text-align: left;
         }
+        #error-message {
+            color: red;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -35,18 +39,46 @@
     <form id="upload-form" enctype="multipart/form-data">
         <input type="file" name="file" id="file" accept=".pdf" required>
         <button type="submit">Upload PDF</button>
+        <p id="error-message"></p>
     </form>
 
     <div id="analysis-results"></div>
 
     <script>
         $(document).ready(function() {
+            $("#file").on("change", function() {
+                let file = this.files[0];
+                let errorMessage = $("#error-message");
+
+                if (file) {
+                    if (file.type !== "application/pdf") {
+                        errorMessage.text("Only PDF files are allowed.");
+                        this.value = ""; // Clear the file input
+                    } else {
+                        errorMessage.text(""); // Clear error message
+                    }
+                }
+            });
+
             $("#upload-form").on("submit", function(e) {
                 e.preventDefault();
 
+                let file = $("#file")[0].files[0];
+                let errorMessage = $("#error-message");
+
+                if (!file) {
+                    errorMessage.text("Please select a file.");
+                    return;
+                }
+
+                if (file.type !== "application/pdf") {
+                    errorMessage.text("Only PDF files are allowed.");
+                    return;
+                }
+
                 // Prepare the FormData object to send the file
                 var formData = new FormData();
-                formData.append("file", $("#file")[0].files[0]);
+                formData.append("file", file);
 
                 // Send the file to FastAPI using AJAX
                 $.ajax({
