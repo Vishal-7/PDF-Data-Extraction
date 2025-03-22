@@ -11,6 +11,7 @@ This project is a demonstration of how we can utilize Azure's Document Client An
 8.  The needed metric values are being displayed as a table on the HTML page to the user.
 
 **Testing on Postman/Insomnia**:
-1.  Open postman/insomnia and create a new request.
-2.  Choose the post request and set the bodt to `form-data`. Set the key as `file` and pick the type of value as `file`. This will allow you to browse the file from your local     computer.
-3.  Once the value is set, click on the send button. This will yield the JSON value to the user on the response section.
+1.  Run the extraction code on your local using the command `uvicorn api_file:app --host 0.0.0.0 --port 8000 --reload`. This will ensure that anyone on the same network using a different computer can test out the same on postman.
+2.  Open postman/insomnia and create a new request.
+3.  Choose post request and set the bodt to `form-data`. Set the key as `file` and pick the type of value as `file`. This will allow you to browse the file from your local computer. Set the url to 'https://<<localhost>>:8000/analyse-pdf/'
+4.  Once the value is set, click on the send button. This will yield the JSON value to the user on the response section.
